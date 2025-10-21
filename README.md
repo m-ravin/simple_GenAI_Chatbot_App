@@ -121,6 +121,15 @@ streamlit run 2-Ollama/app.py
 - Use Ollama's Gemma model via LangChain.
 - Parse and display responses interactively in a web UI.
 
+### LangChain + LCEL + Groq (FASTAPI App)
+
+- Load environment variables.
+- Initialize LangChain and OpenAI API keys.
+- Create prompt templates and chains.
+- Use Groq to run opensource LLM models.
+- Use Ollama's llama-3.1-8b-instant via LangChain.
+- Parse and display responses interactively in a web UI.
+
 ---
 
 ## References
@@ -129,6 +138,7 @@ streamlit run 2-Ollama/app.py
 - [OpenAI API Reference](https://platform.openai.com/docs/)
 - [Ollama Documentation](https://ollama.com/)
 - [Streamlit Documentation](https://docs.streamlit.io/)
+- [FastAPI Documentation](https://fastapi.tiangolo.com/tutorial/)
 
 ---
 
