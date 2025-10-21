@@ -17,6 +17,11 @@ requirements.txt
     1-OpenAI/1.2-simpleapp.ipynb
 2-Ollama/
     2-Ollama/app.py
+3-LCEL/
+    3-LCEL/3.1-SimpleLCEL.ipynb
+    3-LCEL/app.py
+    3-LCEL/README.md
+    3-LCEL/serve.py   
 ```
 
 ---
@@ -33,6 +38,8 @@ requirements.txt
   - 2-Ollama/app.py:  
     Streamlit web app using LangChain with Ollama's Gemma model. Users can interact with the chatbot via a simple UI.
 
+- **Groq+ LCEL + LangChain +LangServe App**:
+  - small demo apps demonstrating how to compose, run, and serve simple LangChain-like chains and local execution flows.
 ---
 
 ## Setup Instructions

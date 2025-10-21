@@ -5,3 +5,7 @@ langchain-openai
 faiss-cpu
 langchain_core
 streamlit
+langchain_groq
+fastapi
+langserve
+sse_starlette
