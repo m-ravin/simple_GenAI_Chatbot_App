@@ -22,6 +22,8 @@ requirements.txt
     3-LCEL/app.py
     3-LCEL/README.md
     3-LCEL/serve.py   
+4-ChatbotwithConversationHistory/
+    4-ChatbotwithConversationHistory/4.1-Chatbot.ipynb  
 ```
 
 ---
@@ -40,6 +42,9 @@ requirements.txt
 
 - **Groq+ LCEL + LangChain +LangServe App**:
   - small demo apps demonstrating how to compose, run, and serve simple LangChain-like chains and local execution flows.
+  
+-- **Chatbot with Conversation History Notebook**:  
+  - Demonstrates how to build a chatbot that maintains conversation history using LangChain's RunnableWithMessageHistory, allowing for context-aware interactions.
 ---
 
 ## Setup Instructions
