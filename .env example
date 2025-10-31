@@ -1,0 +1,5 @@
+OPENAI_API_KEY="sk-proj-***"
+LANCHAIN_API_KEY="lsv2_pt_******"
+LANGCHAIN_PROJECT="GenAIwithLangChain"
+HF_TOKEN="hf_****"
+GROQ_TOKEN="gsk_***"
