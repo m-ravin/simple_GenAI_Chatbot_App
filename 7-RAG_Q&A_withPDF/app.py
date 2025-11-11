@@ -18,6 +18,14 @@ from langchain_classic.chains.combine_documents import create_stuff_documents_ch
 
 from langchain_classic.chains.retrieval import create_retrieval_chain
 
+#load libraries to store the history of the chat
+from langchain_core.prompts import MessagesPlaceholder
+from langchain_classic.chains import create_history_aware_retriever
+from langchain_community.chat_message_histories import ChatMessageHistory
+#from langchain_core.runnables.history import RunnableWithChatMessageHistory
+from langchain_core.runnables.history import RunnableWithMessageHistory
+#from langchain_core.chat_history import ChatMessageHistory as BasechatMessageHistory
+from langchain_core.chat_history import BaseChatMessageHistory
 
 
 
@@ -55,40 +63,74 @@ if api_key:
         vectordb=Chroma.from_documents(documents,embedding=embeddings)
         retriever=vectordb.as_retriever()
 
-        #create the retrieval chain
-        prompt=ChatPromptTemplate.from_messages(
+        contextualize_q_system_prompt=(
+            "Given a chat history and the latest user question"
+            "which might reference context in the chat history, "
+            "formulate a standalone question which can be understood "
+            "without the chat history. Do NOT answer the question, "
+            "just reformulate it if needed and otherwise return it as is."
+        )
+        contextualize_q_prompt = ChatPromptTemplate.from_messages(
+                [
+                    ("system", contextualize_q_system_prompt),
+                    MessagesPlaceholder("chat_history"),
+                    ("human", "{input}"),
+                ]
+            )
+
+        history_aware_retriever=create_history_aware_retriever(llm,retriever,contextualize_q_prompt)
+
+
+        #Answer question
+        system_prompt=ChatPromptTemplate.from_messages(
             [
                 ("system","You are a helpful assistant. Use the following context to answer the user's question.\n\n{context}"),
-                MessagePlaceholder("chat_history"),
+                MessagesPlaceholder(variable_name="chat_history"),
                 ("user","{input}")
             ]
         )
-
-        document_chain=create_stuff_documents_chain(
-            llm=llm,
-            prompt=prompt
+        prompt=ChatPromptTemplate.from_messages(
+            [
+                ("system", system_prompt),
+                MessagesPlaceholder(variable_name="chat_history"),
+                ("user", "{input}")
+            ]
         )
-
-        #retrieval_chain=retriever|document_chain
-
+        qa_chain=create_stuff_documents_chain(llm, prompt)
         retrieval_chain = create_retrieval_chain(
-            retriever,
-            document_chain
+            history_aware_retriever,
+            qa_chain
         )
 
+        #get session based chat history
+        def get_session_history(session_id: str) -> BasechatMessageHistory:
+            if session_id not in st.session_state.store:
+                st.session_state.store[session_id] = ChatMessageHistory()
+            return st.session_state.store[session_id]
+
+        conversation_history_runnable = RunnableWithMessageHistory(
+            #retrieval_chain.get_session_history,
+
+            runnable=retrieval_chain,
+            get_session_history=lambda _: ChatMessageHistory(),
+
+            input_messages_key="input",
+            history_messages_key="chat_history",
+            output_messages_key="answer"
+        )
         #get user question input
         user_input=st.text_input("Enter your question about the document here")
         submit=st.button("Generate Response")
 
         if user_input and submit:
-            response=retrieval_chain.invoke(
+            session_history=get_session_history(st.session_state.session_id)
+            response=conversation_history_runnable.invoke(
                 {"input":user_input},
                 config={"configurable": {"session_id": st.session_state.session_id}}
             )
-            
-
-            st.text_area("Response", value=response)
-            
+            st.write(st.session_state.store)
+            st.write("Assistant:", response['answer'])
+            st.write("Chat History:", session_history.messages)
 
     else:
         st.info("Please upload a PDF document to get started.")
