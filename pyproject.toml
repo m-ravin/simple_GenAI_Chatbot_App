@@ -17,6 +17,7 @@ dependencies = [
     "langchain-openai>=1.0.1",
     "langserve>=0.3.3",
     "openai>=2.6.1",
+    "pypdf>=6.2.0",
     "python-dotenv>=1.2.1",
     "sentence-transformers>=5.1.2",
     "sse-starlette>=3.0.2",
